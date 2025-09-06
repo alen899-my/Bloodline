@@ -4,11 +4,12 @@
 
 
 /* Split container */
-.signup_container {
+.signup_container,.login_Container {
     display: flex;
     width: 100%;
     min-height: 100vh;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    background-color: #000000;
     
 }
 
@@ -20,7 +21,8 @@
 
 .left_side_img img {
     width: 100%;
-    height: 100;
+    height: 100
+    ;
     object-fit: cover;
     mix-blend-mode: lighten;
     filter: brightness(0.8);
@@ -113,7 +115,7 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .signup_container {
+    .signup_container,.login_Container {
         flex-direction: column;
         height: auto;
         box-shadow: none;
