@@ -7,11 +7,9 @@
 .signup_container {
     display: flex;
     width: 100%;
-   
-    height: 100vh;
+    min-height: 100vh;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     
-    overflow: hidden;
 }
 
 /* Left side image */
@@ -118,10 +116,17 @@
     .signup_container {
         flex-direction: column;
         height: auto;
+        box-shadow: none;
+        
     }
     .left_side_img, .signup_form_section {
         width: 100%;
-        height: 300px;
+        height: auto;
+        margin-bottom: -6px;
+    }
+    .left_side_img img{
+        height: auto;
+        width: 100%;
     }
     .signup_form_section {
         padding: 30px 20px;
