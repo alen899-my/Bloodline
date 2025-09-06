@@ -5,6 +5,7 @@ import loginside from "../images/loginside.jpg";
 
 const AuthPage = () => {
   const [isSignup, setIsSignup] = useState(true);
+  
 
   return (
     <>
