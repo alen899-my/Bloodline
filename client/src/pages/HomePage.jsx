@@ -32,7 +32,8 @@ const HomePage = () => {
       }}
     >
       <div className="homepage_Content">
-        <h1>Find Your Blood Line</h1>
+        <h1> Your <span className='blood'>Blood</span> Line is Here!</h1>
+        <button className='find_btn'>Find my Line</button>
       </div>
     </div>
   );

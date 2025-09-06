@@ -23,8 +23,8 @@
     pointer-events: none;
     
     /* Mask to reveal grid around cursor/finger */
-    mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
+    mask-image: radial-gradient(circle 500px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 500px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
     transition: mask-image 0.1s, -webkit-mask-image 0.1s;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .homepage_Content h1 {
-    color: red;
+    color: rgb(255, 255, 255);
     font-size: 4rem;
     font-weight: 900;
     font-family: "Orbitron", sans-serif;
@@ -47,4 +47,22 @@
 
 .homepage_Content h1:hover {
     cursor: pointer;
+}
+.blood{
+    color: red;
+}
+.find_btn{
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-family: "orbitron", sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.find_btn:hover {
+    background-color: darkred;
 }
