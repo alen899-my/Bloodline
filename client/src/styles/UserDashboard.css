@@ -1,0 +1,25 @@
+.userdashboard_container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative; /* parent for absolute positioning */
+}
+
+.infinitecanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative; /* needed if cards are children of canvas */
+}
+
+/* Card moves with the canvas */
+.usercard {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  z-index: 10;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

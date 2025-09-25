@@ -19,6 +19,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     username=models.CharField(max_length=255,unique=True)
     email=models.EmailField(max_length=255,unique=True)
     first_name=models.CharField(max_length=255)
+    address=models.CharField(max_length=255,null=True)
     last_name=models.CharField(max_length=255)
     phone=models.CharField(max_length=255)
     is_active=models.BooleanField(default=True)
@@ -28,4 +29,4 @@ class User(AbstractBaseUser,PermissionsMixin):
     REQUIRED_FIELDS=['username']
 
     def __str__(self):
-        return self.email
+        return self.username

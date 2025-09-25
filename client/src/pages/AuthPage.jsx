@@ -14,6 +14,7 @@ const AuthPage = () => {
     password: "",
     confirm_password: "",
     phone: "",
+    address: "",
   });
 
   const handleChange = (e) => {
@@ -38,6 +39,7 @@ const AuthPage = () => {
           username: formData.email,
           password: formData.password,
           phone: formData.phone,
+          address: formData.address,
         }),
       });
       const data = await res.json();
@@ -51,6 +53,7 @@ const AuthPage = () => {
           password: "",
           confirm_password: "",
           phone: "",
+          address: "",
         });
       } else {
         alert(JSON.stringify(data));
@@ -129,6 +132,7 @@ const AuthPage = () => {
                 onChange={handleChange}
                 required
               />
+
               <input
                 type="password"
                 name="confirm_password"
@@ -136,6 +140,13 @@ const AuthPage = () => {
                 value={formData.confirm_password}
                 onChange={handleChange}
                 required
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
               />
               <input
                 type="text"

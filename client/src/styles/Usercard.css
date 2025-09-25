@@ -1,0 +1,30 @@
+/* UserCard.css */
+
+.user_Card {
+  width: 200px;               /* small box width */
+  padding: 15px;              /* inner spacing */
+  background-color: white;    /* card background */
+  border-radius: 10px;        /* rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* subtle shadow */
+  color: #212121;             /* text color */
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;                   /* spacing between elements */
+  position: absolute;          /* so it can be positioned on canvas */
+  top: 50px;                  /* initial top position */
+  left: 50px;                 /* initial left position */
+  z-index: 10;                /* above canvas */
+}
+
+.user_Card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.user_Card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
