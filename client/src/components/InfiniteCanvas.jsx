@@ -4,7 +4,8 @@ export default function InfiniteCanvas({
   gridSize = 32,
   majorGridEvery = 4,
   background = "#000000ff",
-  className = ""
+  children,
+  className = "",
 }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -14,7 +15,6 @@ export default function InfiniteCanvas({
     lastPointer: null,
     scale: 1,
     offset: { x: 0, y: 0 },
-    
   });
 
   const [scale, setScale] = useState(1);
@@ -29,10 +29,14 @@ export default function InfiniteCanvas({
     // Minor grid
     ctx.strokeStyle = "rgba(224, 9, 9, 0.1)";
     ctx.lineWidth = 1;
-    for (let x = 0; x < 2000; x += gridSize)
-      ctx.moveTo(x, 0), ctx.lineTo(x, 2000);
-    for (let y = 0; y < 2000; y += gridSize)
-      ctx.moveTo(0, y), ctx.lineTo(2000, y);
+    for (let x = 0; x < 2000; x += gridSize) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 2000);
+    }
+    for (let y = 0; y < 2000; y += gridSize) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(2000, y);
+    }
     ctx.stroke();
 
     // Major grid
@@ -40,38 +44,36 @@ export default function InfiniteCanvas({
     ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
     ctx.lineWidth = 1.5;
     const majorStep = gridSize * majorGridEvery;
-    for (let x = 0; x < 2000; x += majorStep)
-      ctx.moveTo(x, 0), ctx.lineTo(x, 2000);
-    for (let y = 0; y < 2000; y += majorStep)
-      ctx.moveTo(0, y), ctx.lineTo(2000, y);
+    for (let x = 0; x < 2000; x += majorStep) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 2000);
+    }
+    for (let y = 0; y < 2000; y += majorStep) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(2000, y);
+    }
     ctx.stroke();
 
     gridCanvasRef.current = offscreen;
   }, [gridSize, majorGridEvery]);
 
-  // Canvas setup - FIXED RESIZE LOGIC
+  // Setup canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
-    
     if (!canvas || !container) return;
 
     const resizeCanvas = () => {
       const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      
-      // Ensure we get the full viewport height
       canvas.width = Math.max(rect.width * dpr, window.innerWidth * dpr);
       canvas.height = Math.max(rect.height * dpr, window.innerHeight * dpr);
       canvas.style.width = "100%";
       canvas.style.height = "100%";
-      
       draw();
     };
-    
-    // Initial resize with timeout to ensure DOM is ready
+
     setTimeout(resizeCanvas, 0);
-    
     window.addEventListener("resize", resizeCanvas);
     const resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(container);
@@ -90,8 +92,6 @@ export default function InfiniteCanvas({
       canvas.removeEventListener("wheel", onWheel);
     };
   }, []);
-
-  // ... rest of your functions remain the same ...
 
   function screenToWorld(px, py) {
     const { scale, offset } = r.current;
@@ -123,38 +123,42 @@ export default function InfiniteCanvas({
     r.current.lastPointer = null;
   }
 
-  function onWheel(e) {
-    if (!e.ctrlKey && !e.metaKey) return;
-    e.preventDefault();
-    const rect = canvasRef.current.getBoundingClientRect();
-    const cx = e.clientX - rect.left;
-    const cy = e.clientY - rect.top;
+ function onWheel(e) {
+  if (!e.ctrlKey && !e.metaKey) return; // Only zoom when Ctrl/Cmd is pressed
+  e.preventDefault();
 
-    const zoomIntensity = 0.0015;
-    const delta = -e.deltaY;
-    let newScale = r.current.scale * (1 + delta * zoomIntensity);
-    newScale = Math.max(0.05, Math.min(newScale, 8));
+  const rect = canvasRef.current.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
-    const worldBefore = screenToWorld(cx, cy);
-    r.current.scale = newScale;
-    r.current.offset.x =
-      worldBefore.x * newScale - cx * window.devicePixelRatio;
-    r.current.offset.y =
-      worldBefore.y * newScale - cy * window.devicePixelRatio;
-    draw();
-  }
+  const zoomSpeed = 0.001;
+  const delta = -e.deltaY * zoomSpeed;
 
+  const oldScale = r.current.scale;
+  const newScale = Math.max(0.05, Math.min(8, oldScale * (1 + delta)));
+
+  // Compute world coordinates of mouse before zoom
+  const worldX = (mouseX - r.current.offset.x) / oldScale;
+  const worldY = (mouseY - r.current.offset.y) / oldScale;
+
+  // Update scale
+  r.current.scale = newScale;
+
+  // Adjust offset so the mouse world point stays under cursor
+  r.current.offset.x = mouseX - worldX * newScale;
+  r.current.offset.y = mouseY - worldY * newScale;
+
+  draw();
+}
   function draw() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const { scale, offset, nodes } = r.current;
+    const { scale, offset } = r.current;
 
-    // Clear without filling white
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Grid
     ctx.setTransform(scale, 0, 0, scale, offset.x, offset.y);
     const pattern = ctx.createPattern(gridCanvasRef.current, "repeat");
     ctx.fillStyle = pattern;
@@ -165,41 +169,15 @@ export default function InfiniteCanvas({
       canvas.height / scale
     );
 
-    // Nodes
-    nodes.forEach((n) => {
-      ctx.save();
-      ctx.beginPath();
-      roundRect(ctx, n.x, n.y, n.w, n.h, 8);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
-      ctx.fill();
-      ctx.lineWidth = 1 / scale;
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
-      ctx.stroke();
-      ctx.scale(1 / scale, 1 / scale);
-      ctx.fillStyle = "#000000ff";
-      ctx.font = "16px Inter, system-ui";
-      ctx.fillText(n.label, (n.x + 12) * scale, (n.y + 32) * scale);
-      ctx.restore();
-    });
-
     setScale(scale);
     setOffset({ x: offset.x, y: offset.y });
-  }
-
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
   }
 
   return (
     <div
       ref={containerRef}
-      className={`w-full h-screen relative select-none ${className}`} // KEEP h-screen here
-      style={{ background: "#000000ff" }}
+      className={`w-full h-screen relative select-none ${className}`}
+      style={{ background }}
     >
       <canvas
         ref={canvasRef}
@@ -209,6 +187,10 @@ export default function InfiniteCanvas({
           backgroundColor: "transparent",
         }}
       />
+      {children &&
+        React.Children.map(children, (child) =>
+          React.cloneElement(child, { scale, offset })
+        )}
     </div>
   );
 }
