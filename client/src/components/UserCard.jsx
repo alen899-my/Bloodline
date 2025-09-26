@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "../styles/UserCard.css";
 
-// Helper to generate random non-overlapping positions
-const generateDummyUsers = (count, maxX = 2000, maxY = 2000, minSpacing = 120) => {
+// Helper to generate random positions across all quadrants
+const generateDummyUsers = (count, range = 2000, minSpacing = 120) => {
   const users = [];
   
   for (let i = 0; i < count; i++) {
@@ -10,10 +10,11 @@ const generateDummyUsers = (count, maxX = 2000, maxY = 2000, minSpacing = 120) =
     let validPosition = false;
     let x, y;
     
-    // Try to find a non-overlapping position
+    // Try to find a non-overlapping position across all quadrants
     while (!validPosition && attempts < 100) {
-      x = Math.random() * maxX;
-      y = Math.random() * maxY;
+      // Generate positions in all quadrants (-range to +range)
+      x = (Math.random() * 2 * range) - range; // -range to +range
+      y = (Math.random() * 2 * range) - range; // -range to +range
       
       // Check if this position is too close to existing users
       validPosition = true;
@@ -64,7 +65,7 @@ const UserCard = ({ scale, offset }) => {
         return res.json();
       })
       .then((data) =>
-        setApiUser({ ...data, worldPos: { x: 1000, y: 1000 } }) // initial center
+        setApiUser({ ...data, worldPos: { x: 0, y: 0 } }) // Center at origin (0,0)
       )
       .catch(() => setApiUser(null))
       .finally(() => setLoading(false));
@@ -74,7 +75,7 @@ const UserCard = ({ scale, offset }) => {
 
   const allUsers = apiUser ? [apiUser, ...dummyUsers] : dummyUsers;
 
-  // API user's screen position for connecting lines
+  // API user's screen position for connecting lines (centered at origin)
   const apiScreenX = apiUser ? apiUser.worldPos.x * scale + offset.x : 0;
   const apiScreenY = apiUser ? apiUser.worldPos.y * scale + offset.y : 0;
 
@@ -127,7 +128,7 @@ const UserCard = ({ scale, offset }) => {
               transform: "translate(-50%, -50%)",
               zIndex: 10,
               border:
-                apiUser && i === 0 ? "2px solid gold" : "1px solid #ffffff88",
+                apiUser && i === 0 ? "2px solid gold" : "1px solid #00000088",
             }}
           >
             <h3>{user.first_name}</h3>
