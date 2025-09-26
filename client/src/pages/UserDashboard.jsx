@@ -15,4 +15,8 @@ const UserDashboard = () => {
   );
 };
 
+<<<<<<< HEAD
 export default UserDashboard;
+=======
+export default UserDashboard;
+>>>>>>> 7f0a6999255e87fd8d5c6d74683dd4d23a3f4641
